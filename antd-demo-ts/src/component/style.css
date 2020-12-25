@@ -1,0 +1,8 @@
+.names {
+    color: red;
+    cursor: pointer;
+}
+
+.names:hover {
+    color: black;
+}
