@@ -1,28 +1,20 @@
 /*
  * @Author: your name
  * @Date: 2020-12-25 20:37:42
- * @LastEditTime: 2020-12-25 22:07:24
+ * @LastEditTime: 2020-12-26 20:06:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /react_review/jsx/src/App.js
  */
 import "./App.css";
-import { Book } from "./component/Book";
-import { Demo } from "./component/Demo";
-import { Jsx1 } from "./component/jsx1";
-import { Number } from "./component/Number";
+// import { Demo1 } from "./demo1";
+import { Demo2 } from "./demo2";
 
 function App() {
   return (
     <div>
-      <Demo> </Demo>
-      <div>Demo下面 </div>
-      <br />
-      <Number> </Number>
-      <br />
-      <Jsx1> </Jsx1>
-      <br />
-      <Book> </Book>
+      {/* <Demo1> </Demo1>   */}
+      <Demo2> </Demo2>
     </div>
   );
 }
