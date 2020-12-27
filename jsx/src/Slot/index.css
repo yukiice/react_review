@@ -1,0 +1,22 @@
+.item {
+    display: flex;
+    height: 44px;
+    font-size: 16px;
+    line-height: 44px;
+    text-align: center;
+}
+
+.left {
+    width: 25vw;
+    background: red;
+}
+
+.middle {
+    width: 50vw;
+    background: green;
+}
+
+.right {
+    width: 25vw;
+    background: blue;
+}
