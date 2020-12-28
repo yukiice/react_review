@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Button } from "antd";
 
-
 function Header(){
     return (
         <h2>Header</h2>
@@ -49,6 +48,11 @@ export default class Demo1 extends Component {
                <div>
                {this.state.count}
                </div>
+              <div>
+                  Start
+              </div>
+               <br/>
+               <br/>
                <Button type="primary" onClick={this.changeClick}>变化</Button>
                <br/>
                <Header></Header>

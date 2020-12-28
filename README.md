@@ -57,7 +57,105 @@
 
 ##### 父子通讯
 
+---
 
+###### **1、父传子**
+
+React实现父传子，有很多种方式，但主要是通过props来实现的
+
+即引入子组件后，在子组件上绑定值，如下🌰：
+
+- 首先在父组件中赋值
+
+  - ```
+     constructor(props) {
+            super(props)
+            this.state = {
+                count:[{
+                    name:'yukiice',
+                    age:18,
+                    sex:'man'
+                }]
+            }
+        }
+    ```
+
+- 引入子组件到父组件，同时在子组件上赋值
+
+  - ```
+     <Child count={this.state.count}></Child>
+    ```
+
+- 然后在子组件中获取，运用解构赋值的方法，取出count
+
+  - ```
+    render() {
+        const { count } = this.props;
+        return (
+          <div>
+            {count.map((item, index) => {
+              return (
+                <div key={index}>
+                  {item.name}
+                  <br />
+                  {item.age}
+                  <br />
+                  {item.sex}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+    ```
+
+###### 2、子传父
+
+子传父有点类似VUE，也是需要子组件自定义事件，并传值，然后在父组件上绑定事件，进行相关操作，如下🌰：
+
+- 在子组件中定义参数
+
+  - ```
+    {count.map((item) => {
+              return (
+                <div key={item.id} onClick={() => this.itemClick(item.id)}>
+                  {item.name}
+                  <br />
+                  {item.age}
+                  <br />
+                  {item.sex}
+                </div>
+              );
+            })}
+    ```
+
+- 然后通过props传给父组件
+
+  - ```
+    itemClick(id) {
+        this.props.FatherClick(id);
+      }
+    ```
+
+- 然后在父组件中绑定事件
+
+  - ```
+     <Child
+              count={this.state.count}
+              FatherClick={this.FathersClick.bind(this)}
+            ></Child>
+    ```
+
+- 调用setstate
+
+  - ```
+    FathersClick(id) {
+        const titles = id + this.state.title;
+        this.setState({
+          title: titles,
+        });
+      }
+    ```
 
 
 
