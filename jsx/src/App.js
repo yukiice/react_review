@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-12-25 20:37:42
- * @LastEditTime: 2020-12-28 22:02:09
+ * @LastEditTime: 2020-12-29 22:49:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /react_review/jsx/src/App.js
  */
 import "./App.css";
-import SetStates from "./SetStates";
+import ControlleOrNos from "./ControlleOrNos";
+// import SetStates from "./SetStates";
 // import Contexts from "./Contexts";
 // import { Demo1 } from "./demo1";
 // import { Demo2 } from "./demo2";
@@ -24,7 +25,8 @@ function App() {
       {/* <Slot></Slot> */}
       {/* <Contexts></Contexts> */}
       {/* <Learn></Learn> */}
-      <SetStates></SetStates>
+      {/* <SetStates></SetStates> */}
+      <ControlleOrNos></ControlleOrNos>
     </div>
   );
 }

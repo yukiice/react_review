@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import Memo from './Memo'
+import GlobalEvent from './GlobalEvent'
+// import SetStateNoChange from './SetStateNoChange'
+// import Memo from './Memo'
 // import RenderNest from './RenderNest'
 // import SetStateCombine from './SetStateCombine'
 // import SetStateAsync from './StateAsync'
@@ -15,7 +17,9 @@ export default class SetState extends Component {
                 {/* render嵌套 */}
                 {/* <RenderNest></RenderNest> */}
                 {/* Memo的使用 */}
-                <Memo></Memo>
+                {/* <Memo></Memo> */}
+                {/* <SetStateNoChange></SetStateNoChange> */}
+                <GlobalEvent></GlobalEvent>
             </div>
         )
     }
