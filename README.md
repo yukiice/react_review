@@ -222,6 +222,69 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
   - 这需要[函数作为子元素 `function as a chil` 这种做法。这个函数**接收当前的 context 值**，**返回一个 React 节点**。传递给函数的 `value` 值等同于往上组件树离这个 context 最近的 Provider 提供的 `value` 值。如果没有对应的 Provider，`value` 参数等同于传递给 `createContext()` 的 `defaultValue`。
 
+###### 4、事件总线
+
+​	react本身，你想完成兄弟组件的传值，方法是比较麻烦的，比如现在有三个组件，分别为组件A，组件B和父组件，你如果想要通过组件A来获取组件B中的某个属性，那么你只能通过组件B先传值给父组件，然后通过父组件再传递给子组件，这样略显麻烦，于是乎，就需要一个方法，来完成兄弟组件的相互传值，Redux是一种方法，但还有一个更简单的方法---**EventBus**
+
+​	EventBus---也叫事件总线，在Vue，Node，Ng中都有这个概念，就是以一个公共组件，来充当中间缓冲地带，来处理数据，完成组件中的数值传递。
+
+​	React他本身是没有这个的，因此需要一个第三方库来引入使用--- **events**
+
+​	**events的API都遵循Node的文档所描述**
+
+- 首先需要安装events
+
+  - `yarn add events`
+
+- 然后在其中的一个组件中引入
+
+  - `import { EventEmitter } from "events";`
+  - EventEmitter可以传任意数量的参数到监听器函数
+
+- 创建并导出EventEmitter方法
+
+  - ```
+    export const eventBus = new EventEmitter();
+    ```
+
+  - **这里需要注意导出，双方触发的方法需要是同一个**
+
+- 然后就可以在此组件中绑定事件，然后触发此方法
+
+  - ```
+    //添加事件并绑定
+    <Button onClick={() => this.toChangeBus()}>Profile</Button>
+    //触发
+     toChangeBus() {
+        eventBus.emit("sayHello", 123, 'hello');
+     }
+    ```
+
+  - eventBus.emit(events,arg1,arg2)   第一个其他组件获取时候调用的方法名字，后面是传递的参数
+
+- 在另一个组件中引入此组件创建的方法
+
+  - ```
+    import { eventBus } from "./Profile";
+    ```
+
+- 然后可以调用React的生命周期来获取参数
+
+  - ```
+    //首先需要创建出处理这两个参数的方法
+    handleCatch(name, age) {
+        console.log(name, age);
+    }
+    //然后在生命周期的函数中获得
+    componentDidMount() {
+        eventBus.addListener("sayHello", this.handleCatch);
+      }
+    //'removeListener' 事件在 listener 被移除后触发。
+    componentWillUnmount() {
+        eventBus.removeListener("sayHello", this.handleCatch);
+    }
+    ```
+
 #### setState
 
 ---
@@ -284,24 +347,85 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 ​	其次 ，setState是会默认合并你的操作的，
 
-​	比如你调用了多次setState来操作数据，那么react会只取你的其中一次，如下🌰
+​	比如你调用了多次setState来操作数据，那么react会只取你的其中一次，如下
 
-- ```
-  this.setState((prevState,props)=>{
-          return { 
-              count:prevState.count + 1
-          }
-      })
-      this.setState((prevState,props)=>{
-          return {
-              count:prevState.count + 1
-          }
-      })
-  ```
+​	但如果你确实是想要执行多次同样的setState，那么，你可以如下🌰所示
 
 - **这里的prevState是之前的state**
 
-  但如果你确实是想要执行多次同样的setState，那么，你可以如下🌰所示
+  - ```react
+    this.setState((prevState,props)=>{
+            return { 
+                count:prevState.count + 1
+            }
+        })
+    ```
 
-- 
+#### Ref
+
+​	与Vue相同，在React中，我们有时候也需要对DOM进行一些操作，方法也近乎相同，那就是通过Ref转发来获取DOM属性。
+
+​	**Ref 转发是一个可选特性，其允许某些组件接收 `ref`，并将其向下传递（换句话说，“转发”它）给子组件。**
+
+​	Ref在React中有三种方式
+
+- string类型（**已被废弃，在17版本中**）
+
+  - 方法很很像Vue，下面是🌰
+  - 首先在DOM上绑定ref属性`<div ref="focusRef" >Focus</div>`
+  - 然后就可以通过`this.refs.focusRef`来操作DOM
+
+- react.CreateRef() （**主流**）
+
+  - 这是ref主要使用的方法，下面是🌰
+  - 首先需要引入
+
+  ```
+  import React, { Component,createRef } from 'react'
+  ```
+
+  - 在constructor中创建ref属性
+
+  ```react
+  constructor(props){
+  super(props)
+  this.objRef = createRef()
+  }
+  ```
+
+  - 然后绑定ref
+
+  ```react
+  <h2 ref={this.objRef}>
+  hello Yukiice
+  </h2>
+  <Button onClick={()=>this.changeClick()}>change</Button>
+  ```
+
+  - 最后调用ref属性，做DOM操作
+
+  ```react
+  changeClick(){
+  console.log(this.objRef.current);
+  this.objRef.current.innerHTML = 'hello'
+  }
+  ```
+
+  Ref的值根据根节点的类型不同而有所不同
+
+  当ref属性作用于HTML元素时候，构造函数中使用createRef创建的ref接收底层DOM元素将其作为current属性
+
+  当ref属性用于自定义class组件时候，ref对象接收组件的挂载实例作为其current属性
+
+  你不能在函数组件中使用ref对象，因为他们没有实例
+
+  但是如果你真的想要获取函数组件中的某个DOM元素
+
+  那么可以通过React.forwardRef，还有就是HOOKS里面
+
+
+
+​	
+
+
 

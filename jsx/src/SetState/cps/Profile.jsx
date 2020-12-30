@@ -1,11 +1,11 @@
 import React, { PureComponent } from "react";
 import { EventEmitter } from "events";
 import { Button } from "antd";
-const eventBus = new EventEmitter();
+export const eventBus = new EventEmitter();
 
 export default class Profile extends PureComponent {
   toChangeBus() {
-    eventBus.emit("sayHello", "hello", 123);
+    eventBus.emit("sayHello", 123, 'hello');
   }
   render() {
     return (
