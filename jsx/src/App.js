@@ -1,12 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2020-12-25 20:37:42
- * @LastEditTime: 2020-12-30 17:23:02
+ * @LastEditTime: 2021-01-03 21:46:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /react_review/jsx/src/App.js
  */
 import "./App.css";
+import HighOrderFuncs from "./HighOrderFuncs";
 // import ControlleOrNos from "./ControlleOrNos";
 // import SetStates from "./SetStates";
 // import Contexts from "./Contexts";
@@ -27,6 +28,7 @@ function App() {
       {/* <Learn></Learn> */}
       {/* <SetStates></SetStates> */}
       {/* <ControlleOrNos></ControlleOrNos> */}
+      <HighOrderFuncs></HighOrderFuncs>
     </div>
   );
 }
