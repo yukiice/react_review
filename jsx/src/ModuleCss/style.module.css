@@ -1,0 +1,7 @@
+.home {
+    color: #ccc;
+}
+
+.home:hover {
+    color: #f0f;
+}
