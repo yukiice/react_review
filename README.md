@@ -243,7 +243,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 - 创建并导出EventEmitter方法
 
-  - ```
+  - ```react
     export const eventBus = new EventEmitter();
     ```
 
@@ -251,7 +251,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 - 然后就可以在此组件中绑定事件，然后触发此方法
 
-  - ```
+  - ```react
     //添加事件并绑定
     <Button onClick={() => this.toChangeBus()}>Profile</Button>
     //触发
@@ -264,13 +264,13 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 - 在另一个组件中引入此组件创建的方法
 
-  - ```
+  - ```react
     import { eventBus } from "./Profile";
     ```
 
 - 然后可以调用React的生命周期来获取参数
 
-  - ```
+  - ```react
     //首先需要创建出处理这两个参数的方法
     handleCatch(name, age) {
         console.log(name, age);
@@ -335,7 +335,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 - 将setState放在定时器中
 
-  - ```
+  - ```react
     setTimeout(this.setState({
     count:this.state.count +1
     }),1000)
@@ -380,7 +380,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
   - 这是ref主要使用的方法，下面是🌰
   - 首先需要引入
 
-  ```
+  ```react
   import React, { Component,createRef } from 'react'
   ```
 
@@ -427,6 +427,8 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 #### 高阶函数和高阶组件
 
+
+
 ##### 1、高阶函数
 
 ​	首先，高阶函数需要满足以下条件之一：
@@ -435,6 +437,8 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 	-	输出一个函数
 
 ​	在javascript中比较常见的filter、map、reduce都是高阶函数
+
+
 
 ##### 2、高阶组件
 
@@ -450,9 +454,295 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 ​	高阶组件：
 
+- 具体而言，**高阶组件是参数为组件，返回值为新组件的函数**
+- 组件是将 props 转换为 UI，而高阶组件是将组件转换为另一个组件
+
+​	下面是高阶组件的基本结构：
+
+- 首先创建一个普通的类组件
+
+  - ```react
+    class DemoHOC extends PureComponent {
+        render() {
+            return (
+                <div>
+                    HOC
+                    <br/>
+                    {this.props.name}
+                </div>
+            )
+        }
+    }
+    ```
+
+- 然后创建高阶组件
+
+  - ```react
+    function enhanceComponent(WrapperComponent){
+        return class NewComponent extends PureComponent{
+            render() {
+                return (
+                    <WrapperComponent {...this.props}></WrapperComponent>
+                )
+            }
+        }
+    }
+    ```
+
+- 然后进行容器化
+
+  - ```react
+    const EnhanceComponent = enhanceComponent(DemoHOC)
+    ```
+
+- 最后导出
+
+  - ```react
+    export default EnhanceComponen
+    ```
 
 
-​	
+
+###### 高阶函数的增强props
+
+---
+
+高阶组件是有非常多的用处的，比如我们有一个需求，需要展示一个重复的内容在多个地方，那么，如果你一个一个进行编写，那么后续改变的时候，就非常难以更改这些一个一个的组件，那么可以利用高阶组件，来简化和完成复用。
+
+例如下面这个🌰：
+
+我们的需求是，传入的名字是自定义的，但是归属地要完成统一
+
+那么一个一个传的话，就略显麻烦，可以利用高阶组件简化这个步骤：
+
+- 首先定义这两个组件
+
+  - ```react
+    class Home extends PureComponent {
+      render() {
+        return (
+          <div>
+            <h2>HOME {`姓名 ${this.props.name} 区域：${this.props.local}`}</h2>
+          </div>
+        );
+      }
+    }
+    
+    class About extends PureComponent {
+      render() {
+        return (
+          <div>
+            <h2>About {`姓名 ${this.props.name} 区域：${this.props.local}`}</h2>
+          </div>
+        );
+      }
+    }
+    ```
+
+- 然后定义高阶组件
+
+  - ```react
+    // 定义高阶函数
+    // 增强props
+    function enchanceLocal(WrappedComponent) {
+      return ({ ...props }) => <WrappedComponent {...props} local="中国" />;
+    }
+    ```
+
+- 分别对这两个组件进行处理
+
+  - ```react
+    const EnchanceHome = enchanceLocal(Home);
+    const EnchanceAbout = enchanceLocal(About);
+    ```
+
+- 那么在父组件中，我们只需要改变原本的两个组件名称，改成处理后的名称即可
+
+  - ```react
+    class EnchanceHOC extends PureComponent {
+      render() {
+        return (
+          <div>
+            <EnchanceHome name="yukiice"></EnchanceHome>
+            <br />
+            <EnchanceAbout name="meimei"></EnchanceAbout>
+          </div>
+        );
+      }
+    }
+    //导出
+    export default EnchanceHOC;
+    ```
+
+
+
+###### 高阶函数结合Context
+
+----
+
+Context在传值方面有非常多的便利，当然，高阶函数也可以结合Context使用
+
+下面是🌰：
+
+- 首先创建 Context 对象
+
+  - ```react
+    // 创建Context对象
+    export const UserContext = createContext({
+      name: "",
+      level: -1,
+      local: "中国",
+    });
+    ```
+
+- 创建组件
+
+  - ```react
+    class Home extends PureComponent {
+      render() {
+        return (
+          <h2>
+            HOME
+            {`姓名 ${this.props.name} 等级：${this.props.level}  区域：${this.props.local}`}
+          </h2>
+        );
+      }
+    }
+    
+    class About extends PureComponent {
+      render() {
+        return (
+          <h2>
+            HOME
+            {`姓名 ${this.props.name} 等级：${this.props.level}  区域：${this.props.local}`}
+          </h2>
+        );
+      }
+    }
+    ```
+
+- 在父组件中引入，并使用Context.Provider
+
+  - ```react
+    class EnchanceHOCWithContext extends PureComponent {
+      render() {
+        return (
+          <div>
+            <UserContext.Provider
+              value={{ name: "yukiice", level: 19, local: "中国" }}
+            >
+              <HocHome></HocHome>
+              <br />
+              <HocAbout></HocAbout>
+            </UserContext.Provider>
+          </div>
+        );
+      }
+    }
+    export default EnchanceHOCWithContext;
+    ```
+
+- 创建高阶组件
+
+  - ```react
+    function withUser(WrappedComponent) {
+      return ({ ...props }) => {
+        return (
+          <UserContext.Consumer>
+            {(value) => {
+              return <WrappedComponent {...props} {...value} />;
+            }}
+          </UserContext.Consumer>
+        );
+      };
+    }
+    ```
+
+  - 使用高阶组件，就不需要分别在两个子组件中都调用 Context.Consumer，但与此同时，需要在高阶组件中传入 **value**
+
+- 处理这两个子组件
+
+  - ```react
+    const HocHome = withUser(Home);
+    const HocAbout = withUser(About);
+    ```
+
+这里就可以在Context对象中处理公共的数据了。
+
+
+
+###### 鉴权操作
+
+---
+
+高阶函数还可以用来做鉴权操作
+
+下面是🌰：
+
+比如我们当前有一个这样的需求，判断是否登录，如果登录后显示**CardPage**，假设没有登录，则让他返回**LoginPage**
+
+- 首先需要创建CardPage和LoginPage两个组件
+
+  - ```react
+    class LoginPage extends PureComponent {
+        render() {
+            return (
+                <div>
+                    Login
+                </div>
+            )
+        }
+    }
+    class CardPage extends PureComponent {
+        render() {
+            return (
+                <div>
+                    Card
+                </div>
+            )
+        }
+    }
+    ```
+
+- 创建高阶组件
+
+  - ```react
+    function loginHoc(WrappedComponent){
+        return ({...props})=> {
+        const {isLogin} = props
+        if (isLogin) {
+            return <WrappedComponent {...props}></WrappedComponent>
+        }else {
+            return <LoginPage></LoginPage>
+        }
+        }
+    }
+    ```
+
+  - 高阶组件中我们做了一层判断，传入了  **isLogin** 的值（从传入的props解构出来），根据这个，来进行组件的分批次渲染。
+
+- 然后处理组件
+
+  - ```react
+    const HocLogin = loginHoc(CardPage)
+    ```
+
+- 最后在父组件中做处理
+
+  - ```react
+    export default class LoginJudge extends PureComponent {
+        render() {
+            return (
+                <div>
+                   <HocLogin isLogin={true}></HocLogin> 
+                </div>
+            )
+        }
+    }
+    
+    ```
+
+  - 这里我们传入了一个状态，状态名为 **isLogin** ，这里传入的值，就可以在高阶组件中通过props进行获取。
 
 
 
