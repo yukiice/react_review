@@ -1,14 +1,15 @@
 /*
  * @Author: your name
  * @Date: 2020-12-25 20:37:42
- * @LastEditTime: 2021-01-04 21:30:58
+ * @LastEditTime: 2021-01-06 10:53:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /react_review/jsx/src/App.js
  */
 import "./App.css";
+import Axios from "./Axios";
 // import HighOrderFuncs from "./HighOrderFuncs";
-import ModuleCss from "./ModuleCss";
+// import ModuleCss from "./ModuleCss";
 // import ControlleOrNos from "./ControlleOrNos";
 // import SetStates from "./SetStates";
 // import Contexts from "./Contexts";
@@ -30,7 +31,8 @@ function App() {
       {/* <SetStates></SetStates> */}
       {/* <ControlleOrNos></ControlleOrNos> */}
       {/* <HighOrderFuncs></HighOrderFuncs> */}
-      <ModuleCss></ModuleCss>
+      {/* <ModuleCss></ModuleCss> */}
+      <Axios></Axios>
     </div>
   );
 }
