@@ -1,10 +1,12 @@
 import './App.less';
-import Demo from './Demo';
+// import Demo from './Demo';
+import Redux from './Redux';
 
 function App() {
   return (
     <div>
-      <Demo></Demo>
+      {/* <Demo></Demo> */}
+      <Redux></Redux>
     </div>
   );
 }
