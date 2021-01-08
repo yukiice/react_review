@@ -1,6 +1,4 @@
 import React, { PureComponent } from "react";
-
-import store from "../flow";
 import { StoreContext } from "./context";
 export function connect(mapStateToProps, mapDispatchToProps) {
   return function enhanceHOC(WarppedComponent) {
