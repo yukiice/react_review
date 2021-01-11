@@ -746,3 +746,13 @@ Context在传值方面有非常多的便利，当然，高阶函数也可以结�
 
 
 
+## Redux
+
+​	Redux是React生态中非常重要的一环
+
+​	Redux是Javascript状态容器，提供可预测化的状态管理。
+
+​	也是因为单页应用的开发，**JavaScript需要管理比任何时候都要更多的State**
+
+​	
+

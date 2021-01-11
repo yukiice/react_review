@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import CommonInput from './CommonInput'
 import CommonItem from './CommonItem'
-
 export default class App extends PureComponent {
     constructor(props){
         super(props)
