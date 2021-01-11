@@ -1,35 +1,23 @@
-import {
-  ADD_NUMBER,
-  SUB_NUMBER,
-  ADD_NULLNUMBER,
-  CHANGE_BANNERS,
-  CHANGE_RECOMMENDS,
-} from "./constants";
+import { reducer as countReducer } from "./count";
 
-const initState = {
-  count: 0,
-  banners: [],
-  recommends: [],
-};
+import { reducer as homeReducer } from "./home";
+
+import {combineReducers} from 'redux'
 
 // 这样就可以actionTypes.XXX来引入
 // import * as actionTypes from './constants'
 
-function reducer(state = initState, action) {
-  switch (action.type) {
-    case ADD_NUMBER:
-      return { ...state, count: state.count + action.num };
-    case SUB_NUMBER:
-      return { ...state, count: state.count - action.num };
-    case ADD_NULLNUMBER:
-      return { ...state, count: state.count + 1 };
-    case CHANGE_BANNERS:
-      return { ...state, banners: action.banners };
-    case CHANGE_RECOMMENDS:
-      return { ...state, recommends: action.recommends };
-    default:
-      return state;
-  }
-}
+// function reducer(state = {}, action) {
+//   return {
+//     countInfo: countReducer(state.countInfo, action),
+//     homeInfo: homeReducer(state.homeInfo, action),
+//   };
+// }
+
+// 可以借助redux中的API来进行reducer的合并
+const reducer = combineReducers({
+  countInfo:countReducer,
+  homeInfo:homeReducer
+})
 
 export default reducer;

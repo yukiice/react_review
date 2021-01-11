@@ -1,27 +1,10 @@
 import {
-  ADD_NUMBER,
-  SUB_NUMBER,
-  ADD_NULLNUMBER,
   CHANGE_BANNERS,
   CHANGE_RECOMMENDS,
   FETCH_HOME_MUTLIDATA,
 } from "./constants.js";
 
 import axios from "axios";
-
-export const addAction = (num) => ({
-  type: ADD_NUMBER,
-  num,
-});
-
-export const subAction = (num) => ({
-  type: SUB_NUMBER,
-  num,
-});
-
-export const addNullAction = () => ({
-  type: ADD_NULLNUMBER,
-});
 
 export const changeBannersAction = (banners) => ({
   type: CHANGE_BANNERS,
