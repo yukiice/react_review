@@ -3,12 +3,8 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 
 import { Button } from "antd";
-import {
-  addAction,
-  subAction,
-  addNullAction,
-  fetcHomeMultiDataAction
-} from "../flow/actionCreators";
+import { addAction,subAction,addNullAction } from "../flow/count/actionCreators";
+import { fetcHomeMultiDataAction} from "../flow/home/actionCreators";
 class SplitDemo5 extends PureComponent {
   componentDidMount() {
     this.props.getHomeMultiData();
@@ -47,9 +43,9 @@ class SplitDemo5 extends PureComponent {
 
 const mapStateToProps = (state) => {
   return {
-    count: state.count,
-    banners: state.banners,
-    recommend: state.recommends,
+    count: state.countInfo.count,
+    banners: state.homeInfo.banners,
+    recommend: state.homeInfo.recommends,
   };
 };
 

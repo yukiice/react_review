@@ -1,7 +1,7 @@
 import { takeEvery, put, all, takeLatest } from "redux-saga/effects";
 import axios from "axios";
-import { FETCH_HOME_MUTLIDATA } from "./constants";
-import { changeBannersAction, changeRecommendsAction } from "./actionCreators";
+import { FETCH_HOME_MUTLIDATA } from "./home/constants";
+import { changeBannersAction, changeRecommendsAction } from "./home/actionCreators";
 
 // 第二个参数  是个生成器函数
 function* fetcHomeMultiDataAction(action) {
