@@ -10,7 +10,7 @@
 
 ## 2、语法
 
-#### Render函数
+#### 1、Render函数
 
 当Rednder函数被调用的时候，他会检查this.props和this.state的变化并返回以下类型之一
 
@@ -29,7 +29,7 @@
 
 ---
 
-#### 生命周期
+#### 2、生命周期
 
 - constructor
   - 如果不初始化state或者不进行方法的绑定，则不需要为Reat组件实现构造函数
@@ -51,11 +51,11 @@
     - 在此方法中执行必要的清理操作
     - 如清楚timer,取消网络请求或者清除在componentDidMount中创建的订阅
 
-#### 组件通讯
+#### 3、组件通讯
 
 ---
 
-##### 父子通讯
+##### 1、父子通讯
 
 ---
 
@@ -285,7 +285,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
     }
     ```
 
-#### setState
+#### 4、setState
 
 ---
 
@@ -361,7 +361,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
         })
     ```
 
-#### Ref
+#### 5、Ref
 
 ​	与Vue相同，在React中，我们有时候也需要对DOM进行一些操作，方法也近乎相同，那就是通过Ref转发来获取DOM属性。
 
@@ -425,7 +425,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 ---
 
-#### 高阶函数和高阶组件
+#### 6、高阶函数和高阶组件
 
 
 
@@ -503,7 +503,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 
 
-###### 高阶函数的增强props
+###### 1、高阶函数的增强props
 
 ---
 
@@ -576,7 +576,7 @@ React实现父传子，有很多种方式，但主要是通过props来实现的
 
 
 
-###### 高阶函数结合Context
+###### 2、高阶函数结合Context
 
 ----
 
@@ -671,7 +671,7 @@ Context在传值方面有非常多的便利，当然，高阶函数也可以结�
 
 
 
-###### 鉴权操作
+###### 3、鉴权操作
 
 ---
 
@@ -744,9 +744,15 @@ Context在传值方面有非常多的便利，当然，高阶函数也可以结�
 
   - 这里我们传入了一个状态，状态名为 **isLogin** ，这里传入的值，就可以在高阶组件中通过props进行获取。
 
+---
+
+#### 7、Css
 
 
-## Redux
+
+---
+
+## 3、Redux
 
 ​	Redux是React生态中非常重要的一环
 
@@ -754,5 +760,536 @@ Context在传值方面有非常多的便利，当然，高阶函数也可以结�
 
 ​	也是因为单页应用的开发，**JavaScript需要管理比任何时候都要更多的State**
 
-​	
+​	也正是因为如此，Redux显得更为重要
+
+---
+
+### 1、核心原则
+
+Redux有三个核心原则：
+
+- 1、单一的数据源
+  - 整个应用的state被储存在一棵object tree中，并且这个object tree只存在唯一一个store中
+- 2、state是只读的
+  - 唯一改变state的方法就是触发action，action是一个用于描述已发生事件的普通对象。
+- 3、使用纯函数来执行修改
+  - 为了描述 action 如何改变 state tree，你需要编写reducer
+
+### 2、文件结构
+
+---
+
+#### 1、不借助中间件
+
+​	主要由以下几个文件组成
+
+- constances.js
+
+  - 主要用来存储定义的字符串常量
+
+  - ```react
+    export const  ADD_ACTION = "ADD_ACTION"
+    export const  DEL_ACTION = "DEL_ACTION"
+    ```
+
+- actionCreators.js
+
+  - 参考
+
+    [redux中关于action的描述]: https://www.redux.org.cn/docs/basics/Actions.html
+
+  - 引入常量，定义action
+
+  - action本质是javascript普通对象
+
+  - 我们约定action内必须使用一个字符串类型的type字段来表示将要执行的动作，多数情况下，type会被定义为字符串常量。
+
+  - ```react
+    import { ADD_ACTION, DEL_ACTION } from "./constances";
+    
+    export const addAction = () => ({
+      type: ADD_ACTION,
+    });
+    
+    export const delAction = () => ({
+      type: DEL_ACTION,
+    });
+    ```
+
+- reducer.js
+
+  - reducer 指定了应用状态的变化如何响应 actions 并发送到 store 中，action 只是描述了有事情发生这一事实，并没有描述应用如何更新 state 。
+
+  - ```react
+    import { ADD_ACTION,DEL_ACTION } from "./constances";
+    
+    const initState = {
+      count: 0,
+    };
+    
+    export default function reducer(state = initState, action) {
+      switch (action.type) {
+        case ADD_ACTION:
+          return { ...state, count: state.count + 1 };
+        case DEL_ACTION:
+          return { ...state, count: state.count - 1 };
+        default:
+          return state;
+      }
+    }
+    ```
+
+- index.js
+
+  - 这里相当于 store ，用来练习我们之前写的 reducer 、action ，他的主要作用如下
+  
+    - 维持应用的 state
+    - 提供 `getState()` 方法获取到 state
+    - 提供 `dispatch(action)`方法更新 state
+    - 通过`subscribe(listener)`来注册监听器
+    - 通过 `subscribe(listener)`返回的函数注销监听器
+  
+  - **Redux应用只有一个单一的 Store ，但是可以拥有多个 Reducer**
+  
+  - ```react
+    import { createStore } from "redux";
+    import reducer from "./reducer";
+    
+    const store = createStore(reducer);
+    export default store;
+    ```
+  
+- App.jsx
+
+  - 这里进行redux的引用与操作
+
+  - 首先引入actions
+
+    - ```react
+      import { addAction, delAction } from "./actionCreators";
+      ```
+
+  - 然后在构造方法中进行赋值
+
+    - ```react
+      constructor(props) {
+          super(props);
+          this.state = store.getState();
+        }
+      ```
+
+  - 定义事件，并完成绑定
+
+    - ```react
+      <h2>数字变换</h2>
+              <br />
+              <h2>{this.state.count}</h2>
+              <br />
+              <Button type="primary" onClick={() => this.changeClick(1)}>
+                +1
+              </Button>
+              <br />
+              <Button type="danger" onClick={() => this.changeClick(-1)}>
+                -1
+              </Button>
+      ```
+
+    - 这里触发了action事件
+
+    - ```react
+      changeClick(e) {
+          switch (e) {
+        case 1:
+              store.dispatch(addAction());
+            break;
+            case -1:
+              store.dispatch(delAction());
+              break;
+            default:
+              message.success("error", 5);
+              break;
+          }
+        }
+      ```
+      
+    - 然后注册监听器和注销监听器
+
+    - ```react
+      componentDidMount() {
+          this.unsubscribue = store.subscribe(() => {
+            this.setState(store.getState());
+          });
+        }
+        componentWillUnmount() {
+          this.unsubscribue();
+        }
+      ```
+
+
+----
+
+#### 1、借助中间件
+
+---
+
+##### 1、Redux-thunk
+
+---
+
+**redux-thunk解决了一个问题**
+
+  当我们在dispatch触发action更新state的时候，如果不借助中间件，那么我们只能传递一个对象，这带来了极大的限制。
+
+  通过redux-thunk，我们可以传递一个函数。能在reducer里面进行一些异步的操作
+
+  
+
+  文件结构如下
+
+- constants.js
+
+  - ```react
+    export const ADD_NUMBER = "ADD_NUMBER";
+    export const SUB_NUMBER = "SUB_NUMBER";
+    export const ADD_NULLNUMBER = "ADD_NULLNUMBER";
+    
+    export const CHANGE_BANNERS = "CHANGE_BANNERS";
+    export const CHANGE_RECOMMENDS = "CHANGE_RECOMMENDS";
+    export const FETCH_HOME_MUTLIDATA = "FETCH_HOME_MUTLIDATA"
+    ```
+
+- actionCreators.js
+
+  - ```react
+    import {
+      ADD_NUMBER,
+      SUB_NUMBER,
+      ADD_NULLNUMBER,
+      CHANGE_BANNERS,
+      CHANGE_RECOMMENDS,
+      FETCH_HOME_MUTLIDATA,
+    } from "./constants.js";
+    
+    import axios from "axios";
+    
+    export const addAction = (num) => ({
+      type: ADD_NUMBER,
+      num,
+    });
+    
+    export const subAction = (num) => ({
+      type: SUB_NUMBER,
+      num,
+    });
+    
+    export const addNullAction = () => ({
+      type: ADD_NULLNUMBER,
+    });
+    
+    export const changeBannersAction = (banners) => ({
+      type: CHANGE_BANNERS,
+      banners,
+    });
+    
+    export const changeRecommendsAction = (recommends) => ({
+      type: CHANGE_RECOMMENDS,
+      recommends,
+    });
+    
+    // redux-thunk中定义的action函数
+    export const getHomeMultiDataAction = (dispatch) => {
+      console.log("111", dispatch);
+      axios({
+        url: "http://123.207.32.32:8000/home/multidata",
+      }).then((res) => {
+        const data = res.data.data;
+        console.log(data);
+        dispatch(changeBannersAction(data.banner.list));
+        dispatch(changeRecommendsAction(data.recommend.list));
+      });
+    };
+    ```
+
+- reducer.js
+
+  - ```react
+    import {
+      ADD_NUMBER,
+      SUB_NUMBER,
+      ADD_NULLNUMBER,
+      CHANGE_BANNERS,
+      CHANGE_RECOMMENDS,
+    } from "./constants";
+    
+    const initState = {
+      count: 0,
+      banners: [],
+      recommends: [],
+    };
+    
+    // 这样就可以actionTypes.XXX来引入
+    // import * as actionTypes from './constants'
+    
+    function reducer(state = initState, action) {
+      switch (action.type) {
+        case ADD_NUMBER:
+          return { ...state, count: state.count + action.num };
+        case SUB_NUMBER:
+          return { ...state, count: state.count - action.num };
+        case ADD_NULLNUMBER:
+          return { ...state, count: state.count + 1 };
+        case CHANGE_BANNERS:
+          return { ...state, banners: action.banners };
+        case CHANGE_RECOMMENDS:
+          return { ...state, recommends: action.recommends };
+        default:
+          return state;
+      }
+    }
+    
+    export default reducer;
+    ```
+
+- index.js
+
+  - ```react
+    import { createStore, applyMiddleware,compose} from "redux";
+    import thunkMiddleware  from 'redux-thunk'
+    import reducer from "./reducer";
+    
+    // composeEnhancers函数
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+    
+    
+    
+    // 应用中间件
+    const storeEnhancer =  applyMiddleware(thunkMiddleware)
+    
+    const storeEnhancer = applyMiddleware(thunkMiddleware)
+    
+    const store = createStore(reducer,composeEnhancers(storeEnhancer));
+    
+    export default store;
+    ```
+
+- App.jsx
+
+  - ```react
+    // 引入connect 使得 React 组件可以被连接
+    import { connect } from "react-redux";
+    
+    import axios from 'axios'
+    
+    import { addAction, subAction, addNullAction,changeBannersAction,changeRecommendsAction } from "../flow/actionCreators";
+    
+    componentDidMount() {
+            axios({
+                url:'http://123.207.32.32:8000/home/multidata'
+            }).then(res=>{
+                const data = res.data.data
+                console.log(data);
+                this.props.changeBanners(data.banner.list)
+                this.props.changeRecommends(data.recommend.list)
+            })
+        }
+    ```
+
+  - render中绑定事件
+
+  - ```react
+    <h2>Home</h2>
+            <br />
+            <h2>当前计数：{this.props.count}</h2>
+            <br />
+    
+            <Button type="primary" onClick={() => this.props.addFiveClick(5)}>
+              +5
+            </Button>
+            <br />
+            <Button onClick={() => this.props.delFiveClick(5)}>-5</Button>
+            <br />
+            <Button type="danger" onClick={() => this.props.addOneClick()}>
+              +1
+            </Button>
+            <br/>
+            <h2>Banners</h2>
+            <div>
+            {
+                this.props.banners.map((item,index)=>{
+                    return  <li key={index}>
+                        <div>
+                            {item.title}
+                        </div>
+                        <img src={item.image} alt=""/>
+                    </li>
+                })
+            }
+            </div>
+    ```
+
+  - 触发action
+
+  - ```react
+    const mapStateToProps = (state) => {
+      return {
+          count: state.count,
+          banners: state.banners,
+          recommend: state.recommends
+      }
+    };
+    
+    const mapDispatchToProps = (dispatch) => ({
+      addFiveClick() {
+        dispatch(addAction());
+      },
+      delFiveClick() {
+        dispatch(subAction());
+      },
+      addOneClick() {
+        dispatch(addNullAction());
+      },
+      changeRecommends(recommends){
+          dispatch(changeRecommendsAction(recommends))
+      },
+      changeBanners(banners){
+          dispatch(changeBannersAction(banners))
+      }
+    });
+    
+    export default connect(mapStateToProps, mapDispatchToProps)(App);
+    ```
+
+---
+
+##### 1、Redux-saga
+
+---
+
+redux-saga与redux-thunk非常类似，但有一些不同
+
+saga 使用了 ES6 的Generator功能，这使得异步的流程更容易读取、写入和测试。通过这样的方式，这些异步的流程看起来像同步的 js 代码，有点像 `async await`  。
+
+
+
+文件结构如下：
+
+- constants.js
+
+  - ```react
+    export const CHANGE_BANNERS = "CHANGE_BANNERS";
+    export const CHANGE_RECOMMENDS = "CHANGE_RECOMMENDS";
+    
+    export const FETCH_HOME_MUTLIDATA = "FETCH_HOME_MUTLIDATA"
+    ```
+
+- actionCreators.js
+
+  - ```react
+    import {
+      FETCH_HOME_MUTLIDATA,
+    } from "./constants.js";
+    
+    export const changeBannersAction = (banners) => ({
+      type: CHANGE_BANNERS,
+      banners,
+    });
+    
+    export const changeRecommendsAction = (recommends) => ({
+      type: CHANGE_RECOMMENDS,
+      recommends,
+    });
+    
+    // redux-saga中间件的action函数
+    export const fetcHomeMultiDataAction = {
+      type: FETCH_HOME_MUTLIDATA,
+    };
+    ```
+- reducer.js
+
+  - ```
+    import {
+      CHANGE_BANNERS,
+      CHANGE_RECOMMENDS,
+    } from "./constants";
+    const initState = {
+      banners: [],
+      recommends: [],
+    };
+    
+    // 这样就可以actionTypes.XXX来引入
+    // import * as actionTypes from './constants'
+    
+    function reducer(state = initState, action) {
+      switch (action.type) {
+        case CHANGE_BANNERS:
+          return { ...state, banners: action.banners };
+        case CHANGE_RECOMMENDS:
+          return { ...state, recommends: action.recommends };
+        default:
+          return state;
+      }
+    }
+    
+    export default reducer;
+    ```
+
+- saga.js
+
+  - ```react
+    import { takeEvery, put, all, takeLatest } from "redux-saga/effects";
+    import axios from "axios";
+    import { FETCH_HOME_MUTLIDATA } from "./constants";
+    import { changeBannersAction, changeRecommendsAction } from "./actionCreators";
+    
+    // 第二个参数  是个生成器函数
+    function* fetcHomeMultiDataAction(action) {
+      const res = yield axios.get(`http://123.207.32.32:8000/home/multidata`);
+      const banners = res.data.data.banner.list;
+      const recommends = res.data.data.recommends;
+      // yield put(changeBannersAction(banners))
+      // yield put(changeRecommendsAction(recommends))
+      yield all([
+        yield put(changeBannersAction(banners)),
+        yield put(changeRecommendsAction(recommends)),
+      ]);
+    }
+    
+    function* saga() {
+      // takeLatest takeEvery区别
+      // takeLatest 依次只能监听一个对应的action
+      // takeEvery  每一个都会被监听执行
+      // yield takeEvery(FETCH_HOME_MUTLIDATA,fetcHomeMultiDataAction)
+      yield all([takeLatest(FETCH_HOME_MUTLIDATA, fetcHomeMultiDataAction)]);
+    }
+    
+    export default saga;
+    ```
+
+- index.js
+
+  - ```react
+    import { createStore, applyMiddleware,compose} from "redux";
+    import reducer from "./reducer";
+    import createSagaMiddleware from 'redux-saga'
+    import saga from './saga'
+    
+    // composeEnhancers函数
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+    
+    
+    
+    // 创建saga中间件
+    const sagaMiddleware = createSagaMiddleware()
+    
+    // 应用saga中间件
+    const storeEnhancer = applyMiddleware(sagaMiddleware)
+    
+    const store = createStore(reducer,composeEnhancers(storeEnhancer));
+    
+    sagaMiddleware.run(saga)
+    export default store;
+    
+    ```
+
+
 

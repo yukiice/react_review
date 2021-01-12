@@ -34,6 +34,7 @@ class SplitDemo3 extends PureComponent {
         </Button>
         <br/>
         <h2>Banners</h2>
+        <div>
         {
             this.props.banners.map((item,index)=>{
                 return  <li key={index}>
@@ -44,6 +45,7 @@ class SplitDemo3 extends PureComponent {
                 </li>
             })
         }
+        </div>
       </div>
     );
   }

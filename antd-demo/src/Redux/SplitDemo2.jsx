@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-
+// 引入connect 使得 React 组件可以被连接
 import { connect } from "react-redux";
 
 import { Button } from "antd";
