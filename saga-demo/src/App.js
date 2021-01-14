@@ -1,6 +1,5 @@
-
-import './App.css';
-import Demo from './Demo';
+import "./App.less";
+import Demo from "./component/Demo";
 
 function App() {
   return (

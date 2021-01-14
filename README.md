@@ -925,10 +925,7 @@ Redux有三个核心原则：
         }
       ```
 
-
-----
-
-#### 1、借助中间件
+#### 2、借助中间件
 
 ---
 
@@ -1159,9 +1156,7 @@ Redux有三个核心原则：
     export default connect(mapStateToProps, mapDispatchToProps)(App);
     ```
 
----
-
-##### 1、Redux-saga
+##### 2、Redux-saga
 
 ---
 
@@ -1206,7 +1201,7 @@ saga 使用了 ES6 的Generator功能，这使得异步的流程更容易读取�
     ```
 - reducer.js
 
-  - ```
+  - ```react
     import {
       CHANGE_BANNERS,
       CHANGE_RECOMMENDS,
@@ -1290,6 +1285,14 @@ saga 使用了 ES6 的Generator功能，这使得异步的流程更容易读取�
     export default store;
     
     ```
+
+---
+
+##### 3、拆分
+
+---
+
+
 
 
 
