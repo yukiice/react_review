@@ -1,7 +1,11 @@
-import "./App.css";
+import "./App.less";
+import Count from "./counter/Count";
+
 
 function App() {
-  return <div className="App">app </div>;
+  return (
+    <Count></Count>
+  )
 }
 
 export default App;
