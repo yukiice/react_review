@@ -1,10 +1,12 @@
 import "./App.less";
-import Count from "./counter/Count";
+// import Count from "./counter/Count";
+import CustomHook from "./CustomHook/CustomHook";
 
 
 function App() {
   return (
-    <Count></Count>
+    // <Count></Count>
+    <CustomHook></CustomHook>
   )
 }
 
