@@ -1292,7 +1292,446 @@ saga 使用了 ES6 的Generator功能，这使得异步的流程更容易读取�
 
 ---
 
+​	拆分是为了更好对其进行一些细致的操作，方便管理不同的的reducer，使得代码的结构更加清晰简明
 
 
 
+​	分别创建不同的 actionCreators、contants、index、reducer
+
+- contants
+
+  - ```react
+    //01
+    
+    export const ADD_FIVE_COUNT = "ADD_FIVE_COUNT";
+    export const DEL_FIVE_COUNT = "DEL_FIVE_COUNT";
+    ```
+    
+  - ```react
+    //02
+    
+    export const ADD_COUNT = "ADD_COUNT"
+    export const DEL_COUNT = "DELETE_COUNT"
+    ```
+  
+- actionCreators
+
+  - ```react
+    //01
+    
+    import { ADD_FIVE_COUNT, DEL_FIVE_COUNT } from "./contants";
+    
+    export const addFiveAction = (num) => ({
+      type: ADD_FIVE_COUNT,
+      num,
+    });
+    
+    export const delFiveAction = (num) => ({
+      type: DEL_FIVE_COUNT,
+      num,
+    });
+    ```
+    
+  - ```react
+    //02
+    
+    import { ADD_COUNT, DEL_COUNT } from "./constants";
+    
+    export const addAction ={
+      type: ADD_COUNT,
+    }
+    
+    export const delAction = {
+        type:DEL_COUNT,
+    }
+    ```
+
+- reducer
+
+  - ```react
+    //01
+    
+    import { ADD_FIVE_COUNT, DEL_FIVE_COUNT } from "./contants";
+    
+    const initialState = {
+      count: 0,
+    };
+    
+    function reducer(state = initialState, action) {
+      switch (action.type) {
+        case ADD_FIVE_COUNT:
+          return { ...state, count: state.count + action.num };
+        case DEL_FIVE_COUNT:
+          return { ...state, count: state.count - action.num };
+        default:
+          return state;
+      }
+    }
+    
+    export default reducer;
+    ```
+
+  - ```react
+    //02
+    
+    import { ADD_COUNT, DEL_COUNT } from "./constants";
+    
+    const initialState = {
+      count: 0,
+    };
+    
+    function countReducer(state = initialState, action) {
+      switch (action.type) {
+        case ADD_COUNT:
+          return { ...state, count: state.count + 1 };
+        case DEL_COUNT:
+          return { ...state, count: state.count - 1 };
+    
+        default:
+          return state;
+      }
+    }
+    
+    export default countReducer;
+    ```
+
+- index
+
+  - ```react
+    import reducer from './reducer'
+    
+    export{
+        reducer
+    }
+    ```
+
+  
+
+  然后进行不同reducer的合并操作
+
+- 首先合并reducer
+
+  - ```react
+    import { reducer as countReducer } from "./Demo";
+    
+    import { reducer as countFiveReducer } from "./CountFive";
+    
+    import { combineReducers } from "redux";
+    
+    const reducer = combineReducers({
+      countInfo: countReducer,
+      countFiveInfo:countFiveReducer
+    });
+    
+    export default reducer;
+    ```
+
+- 配置saga中间件
+
+  - ```react
+    import { takeEvery } from "redux-saga/effects";
+    import { ADD_COUNT, DEL_COUNT } from "./Demo/constants";
+    import { addAction, delAction } from "./Demo/actionCreators";
+    
+    function* saga() {
+      yield takeEvery([
+        { ADD_COUNT, addAction },
+        { DEL_COUNT, delAction },
+      ]);
+    }
+    
+    export default saga;
+    ```
+
+- 合并到store
+
+  - ```react
+    import { createStore, applyMiddleware, compose } from "redux";
+    import reducer from "./reducer";
+    import createSagaMiddleware from "redux-saga";
+    
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    
+    const sagaMiddleware = createSagaMiddleware();
+    
+    const storeEnhancer = applyMiddleware(sagaMiddleware);
+    
+    const store = createStore(reducer, composeEnhancers(storeEnhancer));
+    
+    export default store;
+    
+    ```
+
+
+
+​	然后在组件中就可以通过触发action来使用redux了
+
+- 借助 connect 这个 redux 的 api
+
+  - ```react
+    import { connect } from "react-redux";
+    ```
+
+- 引入actionCreators
+
+  - ```react
+    import { delAction, addAction } from "../redux/Demo/actionCreators";
+    import {
+      delFiveAction,
+      addFiveAction,
+    } from "../redux/CountFive/actionCreators";
+    ```
+
+- 在组件中绑定事件
+
+  - ```react
+     <div className="cursor-wait ...">{this.props.count}</div>
+     <br />
+     <Button onClick={() => this.props.delCountClick()}>减少</Button>
+     <br />
+     <Button onClick={() => this.props.addCountClick()}>增加</Button>
+      
+     <h2 className="mt1">这里是+5的count展示</h2>
+      
+     <div className="cursor-wait ...">{this.props.countFive}</div>
+     <br />
+     <Button onClick={() => this.props.delCountFiveClick(5)}>减少</Button>
+     <br />
+     <Button onClick={() => this.props.addCountFiveClick(5)}>增加</Button>
+    ```
+
+- 触发action
+
+  - ```react
+    const mapStateToProps = (state) => {
+      return {
+        count: state.countInfo.count,
+        countFive: state.countFiveInfo.count,
+      };
+    };
+    
+    const mapDispatchToProps = (dispatch) => ({
+      addCountClick() {
+        dispatch(addAction);
+      },
+      delCountClick() {
+        dispatch(delAction);
+      },
+      delCountFiveClick(num) {
+        dispatch(delFiveAction(num));
+      },
+      addCountFiveClick(num) {
+        dispatch(addFiveAction(num));
+      },
+    });
+    
+    //导出
+    export default connect(mapStateToProps, mapDispatchToProps)(Demo);
+    ```
+
+---
+
+## 4、Hook
+
+​	**Hook 是 React 16.8 新增的特性，它可以让你在不编写 Class 的情况下使用 state 以及其他的 React 特性**
+
+​	Hook 产生的动机
+
+ -	在组件中复用状态逻辑很难
+-	复杂组件变得越来越难以理解
+-	难以理解的 Class
+
+
+
+​	**Hook 就是 javascript 函数，但是它使用的时候有两个额外的规则**
+
+- 只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用。
+- 只能在 React 的函数组件还有自定义 Hook 中调用 Hook，不要在其他 Javascript 函数中调用。
+
+
+
+### 1、useState
+
+---
+
+```react
+const [state, setState] = useState(initialState);
+```
+
+​	返回一个 state ，以及更新 state 的函数。
+
+​	在初始渲染期间，返回的状态（ state ）与传入的第一个参数（ initialState ）相同。
+
+​	setState 函数用于更新 state。它接收一个新的 state 值并将组件的一次重新渲染加入队列。
+
+```react
+setState(newState);
+```
+
+​	**React 会确保 setState 函数的标识是稳定的，并且不会在组件重新渲染的时候发生变化。这就是为什么可以安全的从 useEffect 或者 useCallback 的依赖中省略 setState**
+
+​	state是一个懒惰初始 state
+
+​	initialState 参数只会在组件的初始渲染中起作用，如果初始 state 需要通过复杂计算获得，那么可以传入一个函数，在函数中计算并返回初始的 state ，此函数只在初始渲染的时候被调用
+
+```react
+const [state,setState] =  useState(()=>{
+    const initalState  = initEvents(props)
+    return initalState
+})
+```
+
+​	与 class 组件中的 `setState` 方法不同，`useState` 不会自动合并更新对象。你可以用函数式的 `setState` 结合展开运算符来达到合并更新对象的效果。
+
+​	完成的 useState 🌰如下：
+
+```react
+import  React,{useState} from 'react'
+export default function CountHook() {
+    const [count,setCout] = useState(0)
+
+    const [student,setStudent] = useState([
+        {name:'yukiice',age:18},
+        {name:'yukiice',age:18},
+        {name:'yukiice',age:18},
+    ])
+    function addClick(e){
+        const newStudent = [...student]
+        newStudent[e].age += 1 
+        setStudent(newStudent)
+    }
+    return (
+        <div>
+            <Button type="primary" onClick={()=> setCout(count + 1)}>增加</Button>
+        <h2>{count}</h2>
+            <Button type="primary" onClick={()=> setCout(count - 1)}>减少</Button>
+
+            <br/>
+            <br/>
+            
+            <h2>这里是学生页面</h2>
+            <br/>
+            <ul>
+                {
+                    student.map((item,index)=>{
+                        return (
+                            <li key={index}>
+                                <span>姓名：{item.name} 年龄：{item.age}</span>
+                                <Button size="small" onClick={()=>addClick(index)}>增加</Button>
+                            </li>
+                        )
+                    })
+                }
+            </ul>
+        </div>
+    )
+}
+```
+
+
+
+---
+
+### 2、useEffect
+
+---
+
+​	useEffect 该 Hook 接收一个包含命令式、且有可能是副作用代码的函数
+
+```react
+useEffect(()=>{
+    
+})
+```
+
+​	在函数主体内（这里指的是在 React 渲染阶段）改变 DOM 、添加订阅、设置定时器、记录日志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的 BUG 并破坏 UI 的一致性。
+
+​	使用 useEffect 完成副作用操作。赋值给 useEffect 的函数会在组件渲染到屏幕之后执行，
+
+​	默认情况下，effect将在每轮渲染结束后执行，但你可以渲染让他在某些值改变的时候才执行。
+
+#### 清除 effect
+
+​	useEffect 函数可以返回一个清除函数，如下🌰：
+
+```
+useEffect(() => {
+  //这里是effect作用
+  return () => {
+  //这里清除effect
+  };
+});
+```
+
+​	为了防止内存泄露，清除函数会在组件写在组件卸载前执行，另外，如果组件多次渲染（通常就会这样），则在执行下一个 Effect 之前，上一个 Effect 就已经被清除，在上述事例中，一味着组件的每一次更新都会创建新的订阅，
+
+#### Effect 的执行时机
+
+与 componentDidMount 还有 componentDidUpdate 不同，在浏览器完成布局和绘制之后，传给 useEffect 的函数会延迟调用。这使得它试用于很多常见的副作用场景，比如订阅事件和事件处理等情况，因此不应在函数中执行阻塞浏览器更新屏幕的操作。
+
+
+
+---
+
+### 3、useContext
+
+---
+
+
+
+
+
+---
+
+### 4、useReducer
+
+---
+
+
+
+
+
+---
+
+### 5、useCallback
+
+---
+
+
+
+
+
+---
+
+### 6、useMemo
+
+----
+
+
+
+
+
+---
+
+### 7、useRef
+
+----
+
+
+
+---
+
+### 8、useImperativeHandle
+
+---
+
+
+
+
+
+
+
+
+
+​	
 
