@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 // import Module from './Module'
-// import StyldComponents from './StyldComponents'
+import StyldComponents from './StyldComponents'
 import StyledProps from './StyledProps'
 
 export default class App extends PureComponent {
@@ -8,7 +8,7 @@ export default class App extends PureComponent {
         return (
             <div>
                 {/* <Module></Module> */}
-                {/* <StyldComponents></StyldComponents> */}
+                <StyldComponents></StyldComponents>
                 <StyledProps></StyledProps>
             </div>
         )

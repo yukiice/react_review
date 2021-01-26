@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-12-25 20:37:42
- * @LastEditTime: 2021-01-08 11:33:52
+ * @LastEditTime: 2021-01-20 10:00:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /react_review/jsx/src/App.js
@@ -10,7 +10,7 @@ import ReducerDemo from "./ReducerDemo";
 import "./App.css";
 // import Axios from "./Axios";
 // import HighOrderFuncs from "./HighOrderFuncs";
-// import ModuleCss from "./ModuleCss";
+import ModuleCss from "./ModuleCss";
 // import ControlleOrNos from "./ControlleOrNos";
 // import SetStates from "./SetStates";
 // import Contexts from "./Contexts";
@@ -32,7 +32,7 @@ function App() {
       {/* <SetStates></SetStates> */}
       {/* <ControlleOrNos></ControlleOrNos> */}
       {/* <HighOrderFuncs></HighOrderFuncs> */}
-      {/* <ModuleCss></ModuleCss> */}
+      <ModuleCss></ModuleCss>
       {/* <Axios></Axios> */}
       <ReducerDemo></ReducerDemo>
     </div>

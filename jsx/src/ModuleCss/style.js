@@ -16,3 +16,8 @@ color: #ccc;
     }
 }
 `
+
+
+export const Img = styled.img`
+src: url(${props => props.src});
+`
